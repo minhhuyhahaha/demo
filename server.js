@@ -10,7 +10,7 @@ function parseData(data) {
 	var dom = new JSDOM(data, {
 		features: {
 			QuerySelector: true
-		}, runScripts: "dangerously"
+		}
 	});
 	var html = "";
 	try{
@@ -20,11 +20,11 @@ function parseData(data) {
 			html += '<hr><b class="text-success">Tóm tắt: </b>' + doc.querySelector("#ctl23_ctl00_divSummary").innerHTML;
 			html += '<hr><b class="text-success">Nội dung: </b>' + doc.querySelector("#divContents").innerHTML;
 		} else {
-			html += '<b class="text-success">Tiêu đề: </b>' + doc.querySelector("h1[itemprop]").innerHTML;
+			html += '<b class="text-success">Tiêu đề: </b>' + doc.querySelector(".pm-title").textContent;
 			var x = doc.querySelector("#product-detail > div.kqchitiet");
 			html += '<hr><b class="text-success">Khái quát chi tiết: </b><br>'
 			+ x.children[0].textContent + x.children[1].textContent;
-			html += '<hr><b class="text-success">Nội dung: </b>' + doc.querySelector("div[class='pm-desc']").innerHTML.replace(/<a [^>]*>([^<]*)<\/a>/g,'$1');
+			html += '<hr><b class="text-success">Nội dung: </b>' + doc.querySelector(".pm-desc,.pm-content.stat").innerHTML.replace(/<a [^>]*>([^<]*)<\/a>/g,'$1');
 			var id_carousel = Math.random().toString().slice(2);
 			x = doc.querySelector("#thumbs");
 			if(x) html += '<hr><b class="text-success">Hình ảnh: </b><br>' + 
@@ -51,14 +51,14 @@ function parseData(data) {
 			if(x) html += '<hr><b class="text-success">Đặc điểm bất động sản: </b><br>'+[...x.children].map(i => `<b>- ${i.children[0].textContent}</b>: ${i.children[1].textContent}`).join('<br>');
 			x = doc.querySelector("#project > .table-detail");
 			if(x) html += '<hr><b class="text-success">Thông tin dự án: </b><br>'+[...x.children].map(i => `<b>- ${i.children[0].textContent}</b>: ${i.children[1].textContent}`).join('<br>');
-			x = doc.querySelector("#divCustomerInfo");
-			if(x) html += '<hr><b class="text-success">Liên hệ: </b><br>'
+			x = doc.querySelector("#divCustomerInfo,#divCustomerInfoAd");
+			if(x) html += '<hr><b class="text-success">Liên hệ: </b>'
 				 + [...x.children]
-				 .slice(0,-2)
-				 .map(i => `<b>- ${i.children[0].textContent}</b>: ${i.id != "contactEmail" ? i.children[1].textContent : i.children[1].children[1].textContent}`).join('<br>');
+				 .map(i => i.children.length < 2 ? '':`<br><b>- ${i.children[0].textContent}</b>: ${i.children[0].textContent.trim() != "Email" ? i.children[1].textContent : i.children[1].textContent.replace(/[^]*>(.*)<\/a>[^]*/,'$1').split(/[^\d]+/).map(i => String.fromCharCode(i)).join('')}`).join('');
 		}
 	} catch(e) {
 		// statements
+		console.log(e);
 		return "Hmm, mình không thể lấy được thông tin. Nếu bạn cho rằng đây là lỗi của hệ thống, hãy liên hệ với admin nhé!";
 	}
 	return html;
