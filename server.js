@@ -26,15 +26,16 @@ function parseData(data) {
 			+ x.children[0].textContent + x.children[1].textContent;
 			html += '<hr><b class="text-success">Nội dung: </b>' + doc.querySelector("div[class='pm-desc']").innerHTML.replace(/<a [^>]*>([^<]*)<\/a>/g,'$1');
 			var id_carousel = Math.random().toString().slice(2);
-			html += '<hr><b class="text-success">Hình ảnh: </b><br>' + 
+			x = doc.querySelector("#thumbs");
+			if(x) html += '<hr><b class="text-success">Hình ảnh: </b><br>' + 
 				`<div id="${id_carousel}" class="carousel slide" data-ride="carousel">
 				<!-- Indicators -->
 				<ol class="carousel-indicators">
-				${[...Array(doc.querySelector("#thumbs").children.length).keys()].map(i => `<li data-target="#${id_carousel}" data-slide-to="${i}"${i == 0? ' class="active"' : ''}></li>`).join('')}
+				${[...Array(x.children.length).keys()].map(i => `<li data-target="#${id_carousel}" data-slide-to="${i}"${i == 0? ' class="active"' : ''}></li>`).join('')}
 				</ol>
 
 				<div class="carousel-inner">
-				${[...doc.querySelector("#thumbs").children].map((i,x) => `<div class="item${x == 0 ? ' active' : ''}"><img src="${i.children[0].src.replace('200x200','745x510')}" style="max-height:300px; margin: auto;"></div>`).join('')}
+				${[...x.children].map((i,x) => `<div class="item${x == 0 ? ' active' : ''}"><img src="${i.children[0].src.replace('200x200','745x510')}" style="max-height:300px; margin: auto;"></div>`).join('')}
 				</div>
 
 				<a class="left carousel-control" href="#${id_carousel}" data-slide="prev">
@@ -46,10 +47,13 @@ function parseData(data) {
 				<span class="sr-only">Next</span>
 				</a>
 				</div>`;
-			html += '<hr><b class="text-success">Đặc điểm bất động sản: </b><br>'+[...doc.querySelector(".div-hold > .table-detail").children].map(i => `<b>- ${i.children[0].textContent}</b>: ${i.children[1].textContent}`).join('<br>');
-			html += '<hr><b class="text-success">Thông tin dự án: </b><br>'+[...doc.querySelector("#project > .table-detail").children].map(i => `<b>- ${i.children[0].textContent}</b>: ${i.children[1].textContent}`).join('<br>');
-			html += '<hr><b class="text-success">Liên hệ: </b><br>'
-				 + [...doc.querySelector("#divCustomerInfo").children]
+			x = doc.querySelector(".div-hold > .table-detail");
+			if(x) html += '<hr><b class="text-success">Đặc điểm bất động sản: </b><br>'+[...x.children].map(i => `<b>- ${i.children[0].textContent}</b>: ${i.children[1].textContent}`).join('<br>');
+			x = doc.querySelector("#project > .table-detail");
+			if(x) html += '<hr><b class="text-success">Thông tin dự án: </b><br>'+[...x.children].map(i => `<b>- ${i.children[0].textContent}</b>: ${i.children[1].textContent}`).join('<br>');
+			x = doc.querySelector("#divCustomerInfo");
+			if(x) html += '<hr><b class="text-success">Liên hệ: </b><br>'
+				 + [...x.children]
 				 .slice(0,-2)
 				 .map(i => `<b>- ${i.children[0].textContent}</b>: ${i.id != "contactEmail" ? i.children[1].textContent : i.children[1].children[1].textContent}`).join('<br>');
 		}
