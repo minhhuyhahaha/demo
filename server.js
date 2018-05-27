@@ -98,4 +98,4 @@ app.get('/', (req, res) => {
 	res.sendFile(__dirname+'/sources/index.html');
 });
 app.use('/', express.static('./sources'));
-http.listen(8080);
+http.listen(process.env.PORT || 8080);
