@@ -19,6 +19,7 @@ function sendMessage(text, message_side) {
 
 $('.send_message').click((e) => {
     var s = $('.message_input').val();
+    if(s.length < 1) return;
     if(s == 'clear') {
         $('.messages').html('');
         sendMessage('Đã xoá!','left');
@@ -31,6 +32,7 @@ $('.send_message').click((e) => {
 $('.message_input').keyup((e) => {
     if (e.which === 13) {
         var s = $('.message_input').val();
+        if(s.length < 1) return;
         if(s == 'clear') {
             $('.messages').html('');
             sendMessage('Đã xoá!','left');
